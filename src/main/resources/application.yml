@@ -1,0 +1,51 @@
+#
+# Copyright © 2020 Fatri
+#
+server:
+  port: "${IDIS_DATA_SERVER_PORT:8080}"
+
+idis:
+  kafka:
+    bootstrap-servers: "${IDIS_DATA_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}"
+
+  mysql:
+    database: "${IDIS_DATA_CDH_MYSQL_DATABASE:idis-scm}"
+    username: "${IDIS_DATA_CDH_MYSQL_USERNAME:idis}"
+    password: "${IDIS_DATA_CDH_MYSQL_PASSWORD:idis}"
+    server:
+      host: "${IDIS_DATA_CDH_MYSQL_SERVER_HOST:idis-mysql}"
+      port: "${IDIS_DATA_CDH_MYSQL_SERVER_PORT:3306}"
+
+  cdh:
+    host: "${IDIS_DATA_CHD_HOST:localhost}"
+    admin-username: "${IDIS_DATA_CHD_ADMIN_USERNAME:admin}"
+    admin-password: "${IDIS_DATA_CHD_ADMIN_PASSWORD:admin}"
+    admin-role-uuid: "${IDIS_DATA_CHD_ADMIN_ROLE_UUID:204bdef8-4dcd-4939-b950-69a7d67629a9}"
+    read-only-role-uuid: "${IDIS_DATA_CHD_READ_ONLY_ROLE_UUID:954c9131-5734-47b9-a902-70a2f679bca0}"
+    limit-admin-role-id: "${IDIS_DATA_CHD_LIMIT_ADMIN_ROLE_ID:8}"
+    internal-username-prefix: "${IDIS_DATA_CHD_INTERNAL_USERNAME_PREFIX:__cloudera_internal_user__}"
+
+  jarvis:
+    system-admin-role-id: "${IDIS_DATA_JARVIS_SYSTEM_ADMIN_ROLE_ID:367358351174144000}"
+
+spring:
+  kafka:
+    bootstrap-servers: "${IDIS_DATA_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}"
+    consumer:
+      enable-auto-commit: false
+      auto-offset-reset: "${IDIS_DATA_KAFKA_CONSUMER_AUTO_OFFSET_RESET:${SPRING_KAFKA_CONSUMER_AUTO_OFFSET_RESET:latest}}"
+      key-deserializer: "${IDIS_DATA_KAFKA_CONSUMER_KEY_DESERIALIZER:${SPRING_KAFKA_CONSUMER_KEY_DESERIALIZER:org.apache.kafka.common.serialization.StringDeserializer}}"
+      value-deserializer: "${IDIS_DATA_KAFKA_CONSUMER_VALUE_DESERIALIZER:${SPRING_KAFKA_CONSUMER_VALUE_DESERIALIZER:org.apache.kafka.common.serialization.StringDeserializer}}"
+    listener:
+      ack-mode: "${IDIS_DATA_KAFKA_LISTENER_ACK_MODE:manual_immediate}"
+
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: cn.fatri.idis.data.dao.strategy.UpperTableStrategy
+    database-platform: "${SPRING_JPA_DATABASE_PLATFORM:org.hibernate.dialect.MySQL5InnoDBDialect}"
+  datasource:
+    driver-class-name: "com.mysql.cj.jdbc.Driver"
+    url: "${SPRING_DATASOURCE_URL:jdbc:mysql://${IDIS_DATA_DATASOURCE:${IDIS_DATA_CDH_MYSQL_SERVER_HOST:localhost}:${IDIS_DATA_CDH_MYSQL_SERVER_PORT:13306}/${IDIS_DATA_CDH_MYSQL_DATABASE:scm}}?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&useSSL=false}"
+    username: "${IDIS_DATA_CDH_MYSQL_USERNAME:${SPRING_DATASOURCE_USERNAME:root}}"
+    password: "${IDIS_DATA_CDH_MYSQL_PASSWORD:${SPRING_DATASOURCE_PASSWORD:root}}"

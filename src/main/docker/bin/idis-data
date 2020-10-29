@@ -1,0 +1,29 @@
+#!/bin/bash
+
+idisDataHome=$(dirname $(dirname $(readlink -f $0)))
+
+jarFile=${idisDataHome}/lib/idis-*.jar
+defaultDataFolder=${idisDataHome}/data
+
+installOptions=(
+     -Dloader.main=cn.fatri.idis.data.DataInstallApplication
+     -Dinstall.load_default_data=${INSTALL_LOAD_DEFAULT_DATA:-false}
+     -Dinstall.default_data_path=${INSTALL_DEFAULT_DATA_PATH:-}
+     org.springframework.boot.loader.PropertiesLauncher
+)
+
+runtimeOptions=(
+     ${JAVA_OPTION:-}
+)
+
+case "$1" in
+    install)
+        exec java -cp ${jarFile} ${installOptions[@]}
+        ;;
+    "")
+        exec java ${runtimeOptions[@]} -jar ${jarFile}
+        ;;
+    *)
+        exec $@
+        ;;
+esac
